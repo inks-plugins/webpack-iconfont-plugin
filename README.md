@@ -57,7 +57,7 @@ module.exports = {
   - 类型：String
   - 默认：无，该参数是必须（没有将会报错）
   - 描述：为阿里图标中 - 我的图标项目 - 中获取的css代码url
-  - 基础用法： new IconfontWebpackPlugin({url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css' })
+  - 基础用法：``new IconfontWebpackPlugin({url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css' })``
 
 - ``isDev``
   - 类型：String，
@@ -173,4 +173,105 @@ module.exports = {
   <title>IconfontWebpackPlugin Template</title>
   <link rel="stylesheet" href="./iconfont.css">
 </head>
+```
+
+## Events
+插件开发时预留了两个事件，以便开发人员可以更个性化的使用，在阅读事件用法的时候，请确保您具备编写简单 [Webpack Plugin](https://www.webpackjs.com/contribute/writing-a-plugin/) 的能力,以及对 [Tapable](https://github.com/webpack/tapable) 有初步的认识。
+- ``iconfontCssCreateEnd`` hook
+  - hook类型： AsyncParallelHook
+  - 描述：字体文件css创建结束后调用。hook注册时将接收以下参数：
+    - arg1： ``result`` 创建的图标css文件字符串
+    - arg2： ``callback`` 回调函数，该函数可接受再次处理后的 ``result``，便于您对css文件进行压缩，合并等处理，当然您还可以不传入 ``result``，这时插件将不会再把生成的css文件加入到输出资源列表中，该资源就成为您的盘中餐，可以为所欲为了。
+
+  - 示例一：利用回调函数返回处理后的css，为其添加css代码
+  ```
+  IconfontWebpackPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync('MyPlugin', (result, cb) => {
+    result += '.test { width: 500px; }';
+    cb(result);
+  })
+  ```
+  - 示例二：利用回调函数不返回值，自定义输出资源路径及名字
+  ```
+  IconfontWebpackPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync('MyPlugin', (result, cb) => {
+    compilation.assets['css/myIconFont.css'] = {
+      source: function () {
+        return result;
+      },
+      size: function () {
+        return result.length;
+      }
+    };
+    cb();
+  })
+  ```
+
+- ``iconfontFileDownloadEnd`` hook
+  - hook类型： AsyncParallelHook
+  - 描述：相关引用的字体文件下载完成结束后调用。hook注册时将接收以下参数：
+    - arg1： ``fontFileList`` 准备输出字体文件资源数组列表
+    - arg2： ``callback`` 回调函数，该函数可接受再次处理后的 ``fontFileList``，便于您对 ``fontFileList`` 进行增删改等操作，当然您还可以不传入 ``fontFileList``，这时插件将不会再把下载的引用的字体文件加入到输出资源列表中，该资源就成为您的盘中餐，可以为所欲为了。
+
+  - 示例一：利用回调函数返回处理后的fontFileList，为其添加输出资源
+  ```
+  IconfontWebpackPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
+    const testFile = '测试使用的文件而已'
+    fontFileList.push({
+      filename: 'test.text',
+      data: {
+        source: function () {
+          return testFile;
+        },
+        size: function () {
+          return testFile.length;
+        }
+      }
+    })
+    cb(fontFileList)
+  })
+  ```
+
+  - 示例二：用回调函数不返回值，自定义输出资源路径
+  ```
+  IconfontWebpackPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
+    fontFileList.forEach(file => {
+      const name = file.filename.replace('./iconfont/iconfont','./css/iconfont/iconfont')
+        compilation.assets[name] = file.data
+    });
+    cb()
+  })
+  ```
+
+- plugin.js
+```
+const IconfontWebpackPlugin = require('../src/index')
+const pluginName = 'hook-test-plugin';
+
+class HookTestPlugin {
+  apply(compiler) {
+    compiler.hooks.compilation.tap(pluginName, (compilation) => {
+      // 测试 iconfontCssCreateEnd Hook
+      IconfontWebpackPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync(pluginName, (result, cb) => {
+        result += '.test { width: 500px; }'
+        cb(result)
+      })
+
+      // 测试 iconfontFileDownloadEnd Hook
+      IconfontWebpackPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
+        const testFile = '测试使用的文件而已'
+        fontFileList.push({
+          filename: 'test.text',
+          data: {
+            source: function () {
+              return testFile;
+            },
+            size: function () {
+              return testFile.length;
+            }
+          }
+        })
+        cb(fontFileList)
+      })
+    })
+  }
+}
 ```
