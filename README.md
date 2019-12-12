@@ -6,6 +6,9 @@ webpack-qc-iconfont-plugin是一个[webpack](https://www.webpackjs.com/)插件�
 $ npm install webpack-qc-iconfont-plugin
 ```
 
+## 该插件提供 gulp 插件版
+- [gulp-qc-iconfont](https://github.com/qc-web-y/gulp-qc-iconfont)
+
 ## Usage
 
 - webpack.config.js 文件：
