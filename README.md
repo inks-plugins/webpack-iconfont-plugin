@@ -1,9 +1,9 @@
-# iconfont-webpack-plugin
-iconfont-webpack-plugin是一个[webpack](https://www.webpackjs.com/)插件，可以轻松地帮你将[阿里icon](https://www.iconfont.cn/)的图标项目下载至本地
+# webpack-qc-iconfont-plugin
+webpack-qc-iconfont-plugin是一个[webpack](https://www.webpackjs.com/)插件，可以轻松地帮你将[阿里icon](https://www.iconfont.cn/)的图标项目下载至本地
 
 ## Install
 ```
-$ npm install iconfont-webpack-plugin
+$ npm install webpack-qc-iconfont-plugin
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 
 // 引入插件
-const IconfontWebpackPlugin = require('iconfont-webpack-plugin')
+const WebpackQcIconfontPlugin = require('iconfont-webpack-plugin')
 
 module.exports = {
   mode: 'development',
@@ -35,7 +35,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
 
     // 插件调用代码
-    new IconfontWebpackPlugin({
+    new WebpackQcIconfontPlugin({
       url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css',
       isDev: true,
      fontPath: './iconfont/iconfont',
@@ -57,7 +57,7 @@ module.exports = {
   - 类型：String
   - 默认：无，该参数是必须（没有将会报错）
   - 描述：为阿里图标中 - 我的图标项目 - 中获取的css代码url
-  - 基础用法：``new IconfontWebpackPlugin({url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css' })``
+  - 基础用法：``new WebpackQcIconfontPlugin({url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css' })``
 
 - ``isDev``
   - 类型：String，
@@ -92,13 +92,14 @@ module.exports = {
 
 ## 开发模式(基础用法)：
  将自动获取css源文件注入到定义的模板中。
+
 ### webpack.config.js
 ```
-const IconfontWebpackPlugin = require('iconfont-webpack-plugin')
+const WebpackQcIconfontPlugin = require('iconfont-webpack-plugin')
 
 module.exports = {
   plugins: [
-    new IconfontWebpackPlugin({ url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css' })
+    new WebpackQcIconfontPlugin({ url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css' })
   ]
 }
 ```
@@ -125,11 +126,11 @@ module.exports = {
 
 ### webpack.config.js
 ```
-const IconfontWebpackPlugin = require('iconfont-webpack-plugin')
+const WebpackQcIconfontPlugin = require('iconfont-webpack-plugin')
 
 module.exports = {
   plugins: [
-    new IconfontWebpackPlugin({
+    new WebpackQcIconfontPlugin({
       url: '//at.alicdn.com/t/font_xxxxxxx_xxxxxx.css',
       isDev: false,
       iconPrefix: '.cu-icon-'
@@ -170,13 +171,14 @@ module.exports = {
 ```
 <head>
   <meta charset="UTF-8">
-  <title>IconfontWebpackPlugin Template</title>
+  <title>WebpackQcIconfontPlugin Template</title>
   <link rel="stylesheet" href="./iconfont.css">
 </head>
 ```
 
 ## Events
 插件开发时预留了两个事件，以便开发人员可以更个性化的使用，在阅读事件用法的时候，请确保您具备编写简单 [Webpack Plugin](https://www.webpackjs.com/contribute/writing-a-plugin/) 的能力,以及对 [Tapable](https://github.com/webpack/tapable) 有初步的认识。
+
 - ``iconfontCssCreateEnd`` hook
   - hook类型： AsyncParallelHook
   - 描述：字体文件css创建结束后调用。hook注册时将接收以下参数：
@@ -185,14 +187,14 @@ module.exports = {
 
   - 示例一：利用回调函数返回处理后的css，为其添加css代码
   ```
-  IconfontWebpackPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync('MyPlugin', (result, cb) => {
+  WebpackQcIconfontPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync('MyPlugin', (result, cb) => {
     result += '.test { width: 500px; }';
     cb(result);
   })
   ```
   - 示例二：利用回调函数不返回值，自定义输出资源路径及名字
   ```
-  IconfontWebpackPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync('MyPlugin', (result, cb) => {
+  WebpackQcIconfontPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync('MyPlugin', (result, cb) => {
     compilation.assets['css/myIconFont.css'] = {
       source: function () {
         return result;
@@ -213,7 +215,7 @@ module.exports = {
 
   - 示例一：利用回调函数返回处理后的fontFileList，为其添加输出资源
   ```
-  IconfontWebpackPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
+  WebpackQcIconfontPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
     const testFile = '测试使用的文件而已'
     fontFileList.push({
       filename: 'test.text',
@@ -232,7 +234,7 @@ module.exports = {
 
   - 示例二：用回调函数不返回值，自定义输出资源路径
   ```
-  IconfontWebpackPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
+  WebpackQcIconfontPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
     fontFileList.forEach(file => {
       const name = file.filename.replace('./iconfont/iconfont','./css/iconfont/iconfont')
         compilation.assets[name] = file.data
@@ -243,20 +245,20 @@ module.exports = {
 
 - plugin.js
 ```
-const IconfontWebpackPlugin = require('../src/index')
+const WebpackQcIconfontPlugin = require('../src/index')
 const pluginName = 'hook-test-plugin';
 
 class HookTestPlugin {
   apply(compiler) {
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       // 测试 iconfontCssCreateEnd Hook
-      IconfontWebpackPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync(pluginName, (result, cb) => {
+      WebpackQcIconfontPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync(pluginName, (result, cb) => {
         result += '.test { width: 500px; }'
         cb(result)
       })
 
       // 测试 iconfontFileDownloadEnd Hook
-      IconfontWebpackPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
+      WebpackQcIconfontPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
         const testFile = '测试使用的文件而已'
         fontFileList.push({
           filename: 'test.text',

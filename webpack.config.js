@@ -5,7 +5,7 @@ const {
 } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 
-const IconfontWebpackPlugin = require('./src/index')
+const WebpackQcIconfontPlugin = require('./src/index')
 const HookTestPlugin = require('./test/hookTestPlugin')
 
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
 
     // 插件测试
-    new IconfontWebpackPlugin({
+    new WebpackQcIconfontPlugin({
       url: '//at.alicdn.com/t/font_1425510_3v068prmkkw.css',
       isDev: false,
       // iconPrefix: '.cu-icon-',

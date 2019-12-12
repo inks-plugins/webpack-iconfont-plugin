@@ -1,16 +1,16 @@
-const IconfontWebpackPlugin = require('../src/index')
+const WebpackQcIconfontPlugin = require('../src/index')
 const pluginName = 'hook-test-plugin';
 class HookTestPlugin {
   apply(compiler) {
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
       // 测试 iconfontCssCreateEnd 钩子
-      IconfontWebpackPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync(pluginName, (result, cb) => {
+      WebpackQcIconfontPlugin.getHooks.for('iconfontCssCreateEnd').tapAsync(pluginName, (result, cb) => {
         result += '// 222'
         cb(result)
       })
 
       // 测试 iconfontFileDownloadEnd 钩子
-      IconfontWebpackPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
+      WebpackQcIconfontPlugin.getHooks.for('iconfontFileDownloadEnd').tapAsync(pluginName, (fontFileList, cb) => {
         const testFile = '测试使用的文件而已'
         fontFileList.push({
           filename: 'test.text',

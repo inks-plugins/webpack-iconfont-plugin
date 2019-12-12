@@ -3,10 +3,10 @@ const {
   HookMap
 } = require('tapable');
 const Request = require('request');
-const pluginName = 'iconfont-webpack-plugin';
+const pluginName = 'webpack-qc-iconfont-plugin';
 const asyncHooks = new HookMap(key => new AsyncParallelHook(['result', 'callback']))
 
-class IconfontWebpackPlugin {
+class WebpackQcIconfontPlugin {
   constructor(options) {
     this.options = options || {};
     if (!this.options.url) throw new Error('[' + pluginName + '] Missing options url!');
@@ -69,7 +69,7 @@ class IconfontWebpackPlugin {
 }
 
 // 钩子获取
-IconfontWebpackPlugin.getHooks = asyncHooks
+WebpackQcIconfontPlugin.getHooks = asyncHooks
 
 // 下载并处理生成字体图标css并存储到资源输出列表
 class IconfontDownloadCss {
@@ -191,4 +191,4 @@ class IconfontDownloadFontFile {
 }
 
 // 导出plugin
-module.exports = IconfontWebpackPlugin;
+module.exports = WebpackQcIconfontPlugin;
