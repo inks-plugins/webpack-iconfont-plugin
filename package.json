@@ -1,0 +1,30 @@
+{
+  "name": "iconfont-webpack-plugin",
+  "version": "0.0.1",
+  "description": "iconfont-webpack-plugin是一个webpack插件，可以轻松地帮你将阿里icon的图标项目下载至本地",
+  "main": "src/index.js",
+  "scripts": {
+    "test:dev": "webpack-dev-server --open",
+    "test:build": "webpack"
+  },
+  "keywords": ["webpack", "iconfont"],
+  "author": "YanEr",
+  "license": "ISC",
+  "devDependencies": {
+    "tapable": "^1.1.3",
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "request": "^2.88.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "homepage": "https://github.com/qc-web-y/iconfont-webpack-plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qc-web-y/iconfont-webpack-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qc-web-y/iconfont-webpack-plugin/issues"
+  }
+}
